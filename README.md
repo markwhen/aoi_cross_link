@@ -9,7 +9,7 @@ how-to-use:
 
 ```
 import (
-    crosslink "https://github.com/ynsfsmj/aoi_cross_link"
+    "github.com/ynsfsmj/aoi_cross_link"
 )
 
 aoiSpace := crosslink.NewAOISpaceCL()
