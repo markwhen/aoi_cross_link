@@ -64,6 +64,7 @@ func newRangeTriggerNode(rTrigger *RangeTrigger, isPositive bool, rangeX CLPosVa
 }
 
 func (thisNode *RangeTriggerNode) initialShuffle(oldX CLPosValType, oldZ CLPosValType) {
+	// don't trigger anything
 	thisNode.oldRangeX = 0
 	thisNode.oldRangeZ = 0
 	shuffleXThenZ(thisNode, oldX, oldZ)
@@ -85,7 +86,7 @@ func (thisNode *RangeTriggerNode) getEntityID() EntityIDValType {
 
 // this 2 methods overrides the methods of 'parent' CLNode
 func (thisNode *RangeTriggerNode) crossedX(otherNode CLNodeImp, positiveCross bool, otherOldX CLPosValType, otherOldZ CLPosValType) {
-	if thisNode.nodeID() == thisNode.myTrigger.owner().nodeID() {
+	if thisNode.getEntityID() == otherNode.getEntityID() {
 		return
 	}
 
@@ -108,7 +109,7 @@ func (thisNode *RangeTriggerNode) crossedX(otherNode CLNodeImp, positiveCross bo
 }
 
 func (thisNode *RangeTriggerNode) crossedZ(otherNode CLNodeImp, positiveCross bool, otherOldX CLPosValType, otherOldZ CLPosValType) {
-	if thisNode.nodeID() == thisNode.myTrigger.owner().nodeID() {
+	if thisNode.getEntityID() == otherNode.getEntityID() {
 		return
 	}
 
@@ -194,11 +195,11 @@ func (thisTrigger *RangeTrigger) setRange(rangeX CLPosValType, rangeZ CLPosValTy
 }
 
 func (thisTrigger *RangeTrigger) insert() {
-	cursor := thisTrigger.ownerEntNode.nextX()
+	cursor := thisTrigger.ownerEntNode.pNextX
 	cursor.getCLNodePtr().insertBeforeX(&thisTrigger.lowerBound.CLNode)
 	cursor.getCLNodePtr().insertBeforeX(&thisTrigger.upperBound.CLNode)
 
-	cursor = thisTrigger.ownerEntNode.nextZ()
+	cursor = thisTrigger.ownerEntNode.pNextZ
 	cursor.getCLNodePtr().insertBeforeZ(&thisTrigger.lowerBound.CLNode)
 	cursor.getCLNodePtr().insertBeforeZ(&thisTrigger.upperBound.CLNode)
 

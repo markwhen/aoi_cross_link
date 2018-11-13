@@ -35,8 +35,8 @@ func (thisEnt *gameEntity) onLeaveRange(leavingID EntityIDValType, rangeID Range
 func TestALL(t *testing.T) {
 	entities := []*gameEntity{}
 	var testEnt *gameEntity
-	for i := 0; i < 100; i++ {
-		for j := 0; j < 100; j++ {
+	for i := 40; i < 60; i++ {
+		for j := 40; j < 60; j++ {
 			newEnt := new(gameEntity)
 			newEnt.x = float32(i)
 			newEnt.z = float32(j)
@@ -75,4 +75,16 @@ func TestALL(t *testing.T) {
 		fmt.Println(err)
 	}
 	fmt.Println("EntitiesInRange after move", testEnt.id, ids)
+
+	aoiSpace.RemoveEntity(testEnt)
+	fmt.Println("RemoveEntity done")
+
+	aoiSpace.AddEntity(testEnt)
+	fmt.Println("Re-AddEntity done")
+
+	ids, err = aoiSpace.EntitiesInRange(testEnt, 1.1, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("EntitiesInRange after re-add", testEnt.id, ids)
 }

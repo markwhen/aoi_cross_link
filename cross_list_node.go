@@ -192,23 +192,24 @@ func (thisNode *CLNode) getCLNodePtr() *CLNode {
 func (thisNode *CLNode) removeFromRangeList() {
 	if thisNode.pPrevX != nil {
 		thisNode.pPrevX.pNextX = thisNode.pNextX
-		thisNode.pPrevX = nil
 	}
 
 	if thisNode.pNextX != nil {
 		thisNode.pNextX.pPrevX = thisNode.pPrevX
-		thisNode.pNextX = nil
 	}
 
 	if thisNode.pPrevZ != nil {
 		thisNode.pPrevZ.pNextZ = thisNode.pNextZ
-		thisNode.pPrevZ = nil
 	}
 
 	if thisNode.pNextZ != nil {
 		thisNode.pNextZ.pPrevZ = thisNode.pPrevZ
-		thisNode.pNextZ = nil
 	}
+
+	thisNode.pPrevX = nil
+	thisNode.pNextX = nil
+	thisNode.pPrevZ = nil
+	thisNode.pNextZ = nil
 }
 
 func (thisNode *CLNode) insertBeforeX(newNode *CLNode) {
@@ -240,6 +241,7 @@ type CLNodeTail struct {
 
 func newCLNodeTail() *CLNodeTail {
 	tail := new(CLNodeTail)
+	tail.nodeType = CLNODE_TAIL
 	return tail
 }
 
@@ -259,10 +261,10 @@ func (thisNode *CLNodeTail) z() CLPosValType {
 func shuffleX(thisNode CLNodeImp, oldX CLPosValType, oldZ CLPosValType) {
 	thisPos := thisNode.x()
 	for {
-		if thisNode.prevX() == nil {
+		prevNode := thisNode.prevX()
+		if prevNode == nil {
 			break
 		}
-		prevNode := thisNode.prevX()
 		prevPos := prevNode.x()
 		if thisPos < prevPos || (thisPos == prevPos && thisNode.order() < prevNode.order()) {
 			if thisNode.isTriggerNode() && !prevNode.isTriggerNode() {
@@ -277,10 +279,10 @@ func shuffleX(thisNode CLNodeImp, oldX CLPosValType, oldZ CLPosValType) {
 	}
 
 	for {
-		if thisNode.nextX() == nil {
+		nextNode := thisNode.nextX()
+		if nextNode == nil {
 			break
 		}
-		nextNode := thisNode.nextX()
 		nextPos := nextNode.x()
 		if thisPos > nextPos || (thisPos == nextPos && thisNode.order() < nextNode.order()) {
 			if thisNode.isTriggerNode() && !nextNode.isTriggerNode() {
@@ -299,10 +301,10 @@ func shuffleX(thisNode CLNodeImp, oldX CLPosValType, oldZ CLPosValType) {
 func shuffleZ(thisNode CLNodeImp, oldX CLPosValType, oldZ CLPosValType) {
 	thisPos := thisNode.z()
 	for {
-		if thisNode.prevZ() == nil {
+		prevNode := thisNode.prevZ()
+		if prevNode == nil {
 			break
 		}
-		prevNode := thisNode.prevZ()
 		prevPos := prevNode.z()
 		if thisPos < prevPos || (thisPos == prevPos && thisNode.order() < prevNode.order()) {
 			if thisNode.isTriggerNode() && !prevNode.isTriggerNode() {
@@ -317,10 +319,10 @@ func shuffleZ(thisNode CLNodeImp, oldX CLPosValType, oldZ CLPosValType) {
 	}
 
 	for {
-		if thisNode.nextZ() == nil {
+		nextNode := thisNode.nextZ()
+		if nextNode == nil {
 			break
 		}
-		nextNode := thisNode.nextZ()
 		nextPos := nextNode.z()
 		if thisPos > nextPos || (thisPos == nextPos && thisNode.order() < nextNode.order()) {
 			if thisNode.isTriggerNode() && !nextNode.isTriggerNode() {

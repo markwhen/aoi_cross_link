@@ -150,6 +150,7 @@ func (thisSpace *AOISpaceCL) RemoveEntity(aoiEntity AOIEntityImp) error {
 
 	aoiNode.removeMyself()
 	delete(thisSpace.entityNodesMap, entID)
+
 	return nil
 }
 
