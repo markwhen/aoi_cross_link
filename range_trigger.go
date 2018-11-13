@@ -163,27 +163,27 @@ func (thisTrigger *RangeTrigger) owner() CLNodeImp {
 }
 
 func (thisTrigger *RangeTrigger) isInXRange(x CLPosValType, rangeX CLPosValType) bool {
-	return (thisTrigger.posX-rangeX) < x && (x <= thisTrigger.posX+rangeX)
+	return (thisTrigger.posX-rangeX) < x && x <= (thisTrigger.posX+rangeX)
 }
 
 func (thisTrigger *RangeTrigger) isInZRange(z CLPosValType, rangeZ CLPosValType) bool {
-	return (thisTrigger.posZ-rangeZ) < z && (z <= thisTrigger.posZ+rangeZ)
+	return (thisTrigger.posZ-rangeZ) < z && z <= (thisTrigger.posZ+rangeZ)
 }
 
 func (thisTrigger *RangeTrigger) wasInXRange(x CLPosValType, rangeX CLPosValType) bool {
-	return (thisTrigger.oldX-rangeX) < x && (x <= thisTrigger.oldX+rangeX)
+	return (thisTrigger.oldX-rangeX) < x && x <= (thisTrigger.oldX+rangeX)
 }
 
 func (thisTrigger *RangeTrigger) wasInZRange(z CLPosValType, rangeZ CLPosValType) bool {
-	return (thisTrigger.oldZ-rangeZ) < z && (z <= thisTrigger.oldZ+rangeZ)
+	return (thisTrigger.oldZ-rangeZ) < z && z <= (thisTrigger.oldZ+rangeZ)
 }
 
-func (thisTrigger *RangeTrigger) triggerEnter(who CLNodeImp) {
-	panic("override this func")
+func (thisTrigger *RangeTrigger) triggerEnter(entering CLNodeImp) {
+	thisTrigger.ownerEntNode.aoiNode.onEntityEnterRange(entering.getEntityID(), thisTrigger.rangeID)
 }
 
-func (thisTrigger *RangeTrigger) triggerLeave(who CLNodeImp) {
-	panic("override this func")
+func (thisTrigger *RangeTrigger) triggerLeave(leaving CLNodeImp) {
+	thisTrigger.ownerEntNode.aoiNode.onEntityLeaveRange(leaving.getEntityID(), thisTrigger.rangeID)
 }
 
 func (thisTrigger *RangeTrigger) setRange(rangeX CLPosValType, rangeZ CLPosValType) {

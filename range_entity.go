@@ -57,6 +57,8 @@ type EntityAOINode struct {
 	entListNode *EntityListNode
 	triggers    map[RangeIDValType]*RangeTrigger
 	nextRangeID RangeIDValType
+	space       *AOISpaceCL
+	entityImp   AOIEntityImp
 }
 
 func newEntityListNode(entAOINode *EntityAOINode, x CLPosValType, z CLPosValType) *EntityListNode {
@@ -68,12 +70,22 @@ func newEntityListNode(entAOINode *EntityAOINode, x CLPosValType, z CLPosValType
 	return eln
 }
 
-func newEntityAOINode(entID EntityIDValType, x CLPosValType, z CLPosValType) *EntityAOINode {
+func newEntityAOINode(space *AOISpaceCL, entityImp AOIEntityImp, x CLPosValType, z CLPosValType) *EntityAOINode {
 	aoiNode := new(EntityAOINode)
-	aoiNode.entID = entID
+	aoiNode.entID = entityImp.AoiCLEntityID()
 	aoiNode.entListNode = newEntityListNode(aoiNode, x, z)
 	aoiNode.triggers = make(map[RangeIDValType]*RangeTrigger)
+	aoiNode.space = space
+	aoiNode.entityImp = entityImp
 	return aoiNode
+}
+
+func (thisNode *EntityAOINode) onEntityEnterRange(entID EntityIDValType, rangeID RangeIDValType) {
+	thisNode.space.onEntityEnterRange(thisNode.entID, entID, rangeID)
+}
+
+func (thisNode *EntityAOINode) onEntityLeaveRange(entID EntityIDValType, rangeID RangeIDValType) {
+	thisNode.space.onEntityLeaveRange(thisNode.entID, entID, rangeID)
 }
 
 func (thisNode *EntityAOINode) addRange(rangeX CLPosValType, rangeZ CLPosValType, eventType EventValType) {

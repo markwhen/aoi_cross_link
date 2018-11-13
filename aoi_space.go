@@ -56,6 +56,10 @@ type AOIEntityImp interface {
 	AoiCLZ() CLPosValType
 
 	AoiCLEntityID() EntityIDValType
+
+	onEnterRange(enteringID EntityIDValType, rangeID RangeIDValType)
+
+	onLeaveRange(enteringID EntityIDValType, rangeID RangeIDValType)
 }
 
 type AOISpaceImp interface {
@@ -66,9 +70,6 @@ type AOISpaceCL struct {
 	tailNode *CLNodeTail
 
 	entityNodesMap map[EntityIDValType]*EntityAOINode
-
-	defaultEnterRange CLPosValType
-	defaultLeaveRange CLPosValType
 }
 
 func initPtrs() {
@@ -77,14 +78,29 @@ func initPtrs() {
 }
 
 // NewAOISpaceCL creates a new AOISpaceCL with parameters
-func NewAOISpaceCL(enterRange CLPosValType, leaveRange CLPosValType) *AOISpaceCL {
+func NewAOISpaceCL() *AOISpaceCL {
 	initPtrs()
 	space := new(AOISpaceCL)
-	space.defaultEnterRange = enterRange
-	space.defaultLeaveRange = leaveRange
 	space.tailNode = newCLNodeTail()
 	space.entityNodesMap = make(map[EntityIDValType]*EntityAOINode)
+
 	return space
+}
+
+func (thisSpace *AOISpaceCL) onEntityEnterRange(whoID EntityIDValType, enteringID EntityIDValType, rangeID RangeIDValType) {
+	who, ok := thisSpace.entityNodesMap[whoID]
+	if !ok {
+		return
+	}
+	who.entityImp.onEnterRange(enteringID, rangeID)
+}
+
+func (thisSpace *AOISpaceCL) onEntityLeaveRange(whoID EntityIDValType, leavingID EntityIDValType, rangeID RangeIDValType) {
+	who, ok := thisSpace.entityNodesMap[whoID]
+	if !ok {
+		return
+	}
+	who.entityImp.onLeaveRange(leavingID, rangeID)
 }
 
 // AddEntity : add an Entity to this AOI space
@@ -102,7 +118,7 @@ func (thisSpace *AOISpaceCL) AddEntity(aoiEntity AOIEntityImp) error {
 		return errors.New("entity pos not valid")
 	}
 
-	aoiNode := newEntityAOINode(entID, x, z)
+	aoiNode := newEntityAOINode(thisSpace, aoiEntity, x, z)
 	thisSpace.entityNodesMap[entID] = aoiNode
 
 	thisSpace.tailNode.insertBeforeX(&aoiNode.entListNode.CLNode)

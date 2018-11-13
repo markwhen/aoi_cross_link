@@ -24,20 +24,32 @@ func (thisEnt *gameEntity) AoiCLEntityID() EntityIDValType {
 	return EntityIDValType(thisEnt.id)
 }
 
+func (thisEnt *gameEntity) onEnterRange(enteringID EntityIDValType, rangeID RangeIDValType) {
+	fmt.Println("onEnterRange", thisEnt.id, enteringID, rangeID)
+}
+
+func (thisEnt *gameEntity) onLeaveRange(leavingID EntityIDValType, rangeID RangeIDValType) {
+	fmt.Println("onLeaveRange", thisEnt.id, leavingID, rangeID)
+}
+
 func TestALL(t *testing.T) {
 	entities := []*gameEntity{}
-	for i := -100; i < 100; i++ {
-		for j := -100; j < 100; j++ {
+	var testEnt *gameEntity
+	for i := 0; i < 100; i++ {
+		for j := 0; j < 100; j++ {
 			newEnt := new(gameEntity)
 			newEnt.x = float32(i)
 			newEnt.z = float32(j)
 			newEnt.id = uint32(1000000 + i*1000 + j)
 			entities = append(entities, newEnt)
+			if i == 50 && j == 50 {
+				testEnt = newEnt
+			}
 		}
 	}
 	fmt.Println("step: entities created", len(entities))
 
-	aoiSpace := NewAOISpaceCL(3, 6)
+	aoiSpace := NewAOISpaceCL()
 
 	for _, ent := range entities {
 		aoiSpace.AddEntity(ent)
@@ -46,20 +58,19 @@ func TestALL(t *testing.T) {
 	fmt.Println("step: entities added", len(entities))
 
 	for _, ent := range entities {
-		aoiSpace.AddRangeOfEntity(ent, 5, 5, EVENT_ALL)
+		aoiSpace.AddRangeOfEntity(ent, 1.1, 1.1, EVENT_ALL)
 	}
 
 	fmt.Println("step: range added", len(entities))
 
-	testEnt := entities[20000]
-	ids, err := aoiSpace.EntitiesInRange(testEnt, 3, true)
+	ids, err := aoiSpace.EntitiesInRange(testEnt, 1.1, true)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("EntitiesInRange", testEnt.id, ids)
 
-	aoiSpace.MoveEntity(testEnt, testEnt.AoiCLX()+5, testEnt.AoiCLZ()+5)
-	ids, err = aoiSpace.EntitiesInRange(testEnt, 3, true)
+	aoiSpace.MoveEntity(testEnt, testEnt.AoiCLX()+1, testEnt.AoiCLZ()+1)
+	ids, err = aoiSpace.EntitiesInRange(testEnt, 1.1, true)
 	if err != nil {
 		fmt.Println(err)
 	}
