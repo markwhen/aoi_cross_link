@@ -221,5 +221,35 @@ func (thisSpace *AOISpaceCL) EntitiesInRange(aoiEntity AOIEntityImp, r CLPosValT
 		}
 		cursor = cursor.prevX()
 	}
+
+	xDist, zDist = 0, 0
+	cursor := listNode.nextZ()
+	for {
+		if cursor == nil || xDist > r {
+			break
+		}
+		if cursor.isEntity() {
+			xDist, zDist = Abs(cursor.x()-centerPosX), Abs(cursor.z()-centerPoxZ)
+			if xDist <= r && zDist <= r {
+				res = append(res, cursor.getEntityID())
+			}
+		}
+		cursor = cursor.nextZ()
+	}
+
+	xDist, zDist = 0, 0
+	cursor = listNode.prevZ()
+	for {
+		if cursor == nil || xDist > r {
+			break
+		}
+		if cursor.isEntity() {
+			xDist, zDist = Abs(cursor.x()-centerPosX), Abs(cursor.z()-centerPoxZ)
+			if xDist <= r && zDist <= r {
+				res = append(res, cursor.getEntityID())
+			}
+		}
+		cursor = cursor.prevZ()
+	}
 	return res, nil
 }
